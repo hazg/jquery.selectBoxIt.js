@@ -591,11 +591,20 @@
 
             self.listAnchors = self.list.children("a");
 
+            console.log(self.listItems);
             // Sets the 'selectboxit-option-first' class name on the first drop down option
-            self.listItems.first().addClass("selectboxit-option-first");
+            if( self.options.hideCurrent ){
+              self.listItems.first(':not(li.selectboxit-selected)').addClass("selectboxit-option-first");
+            }else{
+              self.listItems.first().addClass("selectboxit-option-first");
+            }
 
             // Sets the 'selectboxit-option-last' class name on the last drop down option
-            self.listItems.last().addClass("selectboxit-option-last");
+            if( self.options.hideCurrent ){
+              self.listItems.last(':not(li.selectboxit-selected)').addClass("selectboxit-option-last");
+            }else{
+              self.listItems.last().addClass("selectboxit-option-last");
+            }
 
             // Set the disabled CSS class for select box options
             self.list.find("li[data-disabled='true']").not(".optgroupHeader").addClass(self.theme["disabled"]);
@@ -900,6 +909,13 @@
                 }
 
                 self.list.promise().done(function() {
+
+                    // Add first\last visible class to relevent items, removes old state
+
+                    self.listItems.removeClass('selectboxit-first-visible selectboxit-last-visible');
+                    self.listItems.not(':hidden').first().addClass('selectboxit-first-visible');
+                    self.listItems.not(':hidden').last().addClass('selectboxit-last-visible');
+
 
                     // Updates the list `scrollTop` attribute
                     self._scrollToView("search");
@@ -1771,6 +1787,7 @@
 
     // Stores the plugin prototype object in a local variable
     var selectBoxIt = $.selectBox.selectBoxIt.prototype;
+
 
     // Add Options Module
     // ==================
